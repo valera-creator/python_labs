@@ -3,10 +3,10 @@ def main():
         n = int(input())
     except ValueError:
         print('не число')
-        quit()
+        return
     if n < 1:
         print('не натуральное')
-        quit()
+        return
 
     nums = [n]
     while True:
