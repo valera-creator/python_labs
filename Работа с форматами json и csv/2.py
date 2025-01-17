@@ -19,9 +19,9 @@ def write_range(data):
 
     with open('res1.csv', mode='w', newline='', encoding="utf8") as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        for elem in data[1:]:
-            if left <= float(elem[2]) <= right:
-                writer.writerow(elem)
+        res = list(filter(lambda x: left <= float(x[2]) <= right, data[1:]))
+        for elem in res:
+            writer.writerow(elem)
 
 
 def write_sorted_inflation(data):
@@ -35,7 +35,7 @@ def write_sorted_inflation(data):
 def main():
     try:
         with open('countries.csv') as csvfile:
-            data = list(csv.reader(csvfile, delimiter=','))
+            data = list(csv.reader(csvfile, delimiter=',', quotechar='"'))
 
     except FileNotFoundError:
         print('нет файла')
