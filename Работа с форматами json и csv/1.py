@@ -23,9 +23,12 @@ def search_diurnal(data):
 
 def search_min_weight(data):
     try:
-        res = min(data['animals'], key=lambda x: x['weight_min'])['name']
+        res = min(data['animals'], key=lambda x: float(x['weight_min']))['name']
     except KeyError:
         print('нет такого ключа')
+        return
+    except ValueError:
+        print('вес - не число')
         return
     print(f"животное с наименьшим весом: {res}")
 
