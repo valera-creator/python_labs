@@ -1,10 +1,11 @@
 # pip install docxtpl
 from docxtpl import DocxTemplate
 import csv
+import os
+from docx import Document
 
 
 def main():
-    doc = DocxTemplate("template.docx")
     try:
         with open('data_marathon.csv') as csvfile:
             data = list(csv.reader(csvfile, delimiter=',', quotechar='"'))
@@ -25,6 +26,9 @@ def main():
             group_year[elem[0]] = []
         group_year[elem[0]].append(elem)
 
+    doc = DocxTemplate("template.docx")
+    main_doc = Document()
+
     for year, marathons in group_year.items():
         context = {
             "year": year,
@@ -39,10 +43,17 @@ def main():
             ]
         }
         doc.render(context)
-        doc.add_page_break()
+        doc.save('save_info.docx')
 
-        # Сохранение документа
-    doc.save('res.docx')
+        text = []
+        for paragraph in doc.paragraphs:
+            text.append(paragraph.text)
+
+        for elem in text:
+            main_doc.add_paragraph(elem)
+        main_doc.add_page_break()
+    main_doc.save('res.docx')
+    os.remove('save_info.docx')
 
 
 if __name__ == "__main__":
