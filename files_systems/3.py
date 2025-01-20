@@ -10,6 +10,10 @@ def search_size_files():
     full_path_dst = "D://projects/laba_python/files_systems/res_3"
     # full_path_dst = input('Введите путь dst: ')
 
+    if not os.path.isdir(full_path_dst):
+        print('нет dst путя')
+        return
+
     for currentdir, dirs, files in os.walk(full_path_src):
         for file in files:
             path_file = os.path.join(currentdir, file)
