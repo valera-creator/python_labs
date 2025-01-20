@@ -2,13 +2,17 @@ import shutil
 import os
 
 
-def search_size_files():
+def move_images_files():
     extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp']
-    full_path_src = "D://projects/laba_python/files_systems/test_3"
-    # full_path_src = input('Введите путь src: ')
+    # full_path_src = "D://projects/laba_python/files_systems/test_3"
+    full_path_src = input('Введите путь src: ')
 
-    full_path_dst = "D://projects/laba_python/files_systems/res_3"
-    # full_path_dst = input('Введите путь dst: ')
+    # full_path_dst = "D://projects/laba_python/files_systems/res_3"
+    full_path_dst = input('Введите путь dst: ')
+
+    if not os.path.isdir(full_path_src):
+        print('нет src путя')
+        return
 
     if not os.path.isdir(full_path_dst):
         print('нет dst путя')
@@ -27,4 +31,4 @@ def search_size_files():
 
 
 if __name__ == "__main__":
-    search_size_files()
+    move_images_files()
