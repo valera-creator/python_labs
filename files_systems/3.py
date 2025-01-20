@@ -18,7 +18,12 @@ def search_size_files():
         for file in files:
             path_file = os.path.join(currentdir, file)
             if os.path.splitext(path_file)[-1] in extensions:
-                shutil.move(path_file, full_path_dst)
+                try:
+                    shutil.move(path_file, full_path_dst)
+                except shutil.Error:  # файл уже существует там
+                    pass
+
+    shutil.make_archive('images', 'zip', full_path_dst)
 
 
 if __name__ == "__main__":
