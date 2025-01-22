@@ -48,20 +48,18 @@ def make_brightness(im, text='plus'):
         return
 
     degree = 1 if text == 'plus' else -1
-    # чтобы исходное не испортить, если вдруг нужно будет доработать, чтобы вызывалось несколько фильтров
-    im2 = im.copy()
-    pixels = im2.load()
+    pixels = im.load()
 
     k = k ** degree
 
-    for i in range(im2.width):
-        for j in range(im2.height):
+    for i in range(im.width):
+        for j in range(im.height):
             r, g, b = pixels[i, j]
             new_r = min(255, int(r * k))
             new_g = min(255, int(g * k))
             new_b = min(255, int(b * k))
             pixels[i, j] = new_r, new_g, new_b
-    im2.save(f'brightness{text}.jpg')
+    im.save(f'brightness{text}.jpg')
 
 
 def make_average_color(im):
@@ -100,8 +98,64 @@ def insert_text(im):
     font = ImageFont.truetype("arial.ttf", 20)
     text = 'а текст я вставлю этот, в условии задачи нет про ввод текста ни слова'
     draw = ImageDraw.Draw(im)
-    draw.text((x_text, y_text), fill=(100, 100, 255), text=text, font=font)
+    draw.text(xy=(x_text, y_text), fill=(100, 100, 255), text=text, font=font)
     im.save('text.jpg')
+
+
+def check_correct_coords(text, im):
+    x, y = im.size
+    try:
+        coords = tuple(map(int, input(text).split()))
+    except ValueError:
+        print('не число')
+        quit()
+
+    if len(coords) != 4:
+        print('не 4 координаты')
+        quit()
+    if (coords[0] < 0 or coords[0] > x or coords[2] < 0 or coords[2] > x or coords[1] < 0 or coords[1] > y or
+            coords[3] < 0 or coords[3] > y):
+        print('координаты за пределами рисунка')
+        quit()
+    return coords
+
+
+def insert_shapes(im):
+    draw = ImageDraw.Draw(im)
+
+    coords = check_correct_coords('Введите 4 координаты эллипса через пробел (левый верхний угол и длина, ширина, '
+                                  'x1 >= x0 и y1 >= y0)): ', im)
+
+    try:
+        draw.ellipse(coords, fill='purple')
+    except ValueError:
+        print('неправильно заданы координаты: должно быть x1 >= x0 и y1 >= y0')
+        return
+
+    coords = check_correct_coords(
+        'Введите 4 координаты прямоугольника через пробел (левый верхний угол и длина, ширина, '
+        'x1 >= x0 и y1 >= y0): ', im)
+
+    try:
+        draw.rectangle(coords, fill='blue')
+    except ValueError:
+        print('неправильно заданы координаты: должно быть x1 >= x0 и y1 >= y0')
+        return
+
+    coords = check_correct_coords(
+        'Введите 4 координаты дуги: (левый верхний угол и длина, ширина, x1 >= x0 и y1 >= y0): ', im)
+    try:
+        draw.arc(coords, start=45, end=270, fill='green', width=5)
+    except ValueError:
+        print('неправильно заданы координаты: должно быть x1 >= x0 и y1 >= y0')
+        return
+
+    coords = check_correct_coords(
+        'Введите 4 координаты линии (левый верхний угол и длина, ширина, x1 >= x0 и y1 >= y0): ', im)
+
+    draw.line((coords[0:2], coords[2:]), fill='orange', width=5)
+
+    im.save('draw.jpg')
 
 
 def main():
@@ -142,6 +196,8 @@ def main():
             make_average_color(im)
         case 'i':
             insert_text(im)
+        case 'j':
+            insert_shapes(im)
         case _:
             print('не опознано')
 
