@@ -1,5 +1,5 @@
 # pip install pillow
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 
 def mirror_vertical(im):
@@ -86,6 +86,24 @@ def make_average_color(im):
     im2.save('average.jpg')
 
 
+def insert_text(im):
+    try:
+        x_text, y_text = map(int, input('Введите координаты текста левого угла через пробел: ').split())
+    except ValueError:
+        print('не число')
+        return
+
+    x, y = im.size
+    if x_text < 0 or y_text < 0 or x_text > x or y_text > y:
+        print('координаты левого угла текста вне изображения')
+        return
+    font = ImageFont.truetype("arial.ttf", 20)
+    text = 'а текст я вставлю этот, в условии задачи нет про ввод текста ни слова'
+    draw = ImageDraw.Draw(im)
+    draw.text((x_text, y_text), fill=(100, 100, 255), text=text, font=font)
+    im.save('text.jpg')
+
+
 def main():
     try:
         im = Image.open("rayana.jpg")
@@ -103,7 +121,7 @@ def main():
     print('i: текст по введенным координатам')
     print('j: графический примитив по координатам')
 
-    action = input('Введите из (a, b, c, d, e, f, g, h, i, j) букву: ')
+    action = input('Введите из (a, b, c, d, e, f, g, h, i, j) букву: ').lower()
 
     match action:
         case 'a':
@@ -122,6 +140,8 @@ def main():
             make_brightness(im, 'minus')
         case 'h':
             make_average_color(im)
+        case 'i':
+            insert_text(im)
         case _:
             print('не опознано')
 
