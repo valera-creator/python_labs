@@ -11,6 +11,9 @@ def main():
     except ValueError:
         print('возможно, в файле не числа или кол-во неизвестных != кол-во строк')
         return
+    except FileNotFoundError:
+        print('нет файла')
+        return
 
     if arr.ndim == 1:  # если это линейное уравнение
         if len(arr) != 2:
