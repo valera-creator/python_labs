@@ -4,6 +4,8 @@ import numpy as np
 
 def main():
     try:
+        # dtype - автоматически тип данных установить
+        # names - чтобы потом обращаться data['price], например
         data = np.genfromtxt(fname='udemy_courses.csv', delimiter=',', dtype=None, encoding='utf-8', names=True)
     except FileNotFoundError:
         print('нет файла')
@@ -53,6 +55,7 @@ def main():
 
     # индексация сохраняется, для level[0] соответствует counts[0] и тд
     levels, counts = np.unique(data['level'], return_counts=True)
+    print(levels, counts)
     max_count = np.max(counts)
     print('уровень (уровни, если их много одинакового кол-ва), для которых создано максимальное кол-во курсов: ')
     for i in range(len(counts)):
