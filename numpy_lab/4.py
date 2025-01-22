@@ -5,7 +5,7 @@ import numpy as np
 def main():
     try:
         # dtype - автоматически тип данных установить
-        # names - чтобы потом обращаться data['price], например
+        # names - чтобы потом обращаться data['price], например + первая строка читается как имена столбцов
         data = np.genfromtxt(fname='udemy_courses.csv', delimiter=',', dtype=None, encoding='utf-8', names=True)
     except FileNotFoundError:
         print('нет файла')
