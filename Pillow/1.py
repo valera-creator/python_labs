@@ -1,5 +1,5 @@
 # pip install pillow
-from PIL import Image, ImageDraw
+from PIL import Image
 
 
 def mirror_vertical(im):
@@ -24,7 +24,7 @@ def mirror_no_main_diagonal(im):
     out.save('no_main_diagonal.jpg')
 
 
-def mirror_sepia(im):
+def make_sepia(im):
     im_brown = Image.new("RGB", im.size, 'brown')
     pixels_first = im.load()
     pixels_second = im_brown.load()
@@ -40,6 +40,52 @@ def mirror_sepia(im):
     im_brown.save('sepia.jpg')
 
 
+def make_brightness(im, text='plus'):
+    try:
+        k = float(input('Введите коэффицент яркости: '))
+    except ValueError:
+        print('не число')
+        return
+
+    degree = 1 if text == 'plus' else -1
+    # чтобы исходное не испортить, если вдруг нужно будет доработать, чтобы вызывалось несколько фильтров
+    im2 = im.copy()
+    pixels = im2.load()
+
+    k = k ** degree
+
+    for i in range(im2.width):
+        for j in range(im2.height):
+            r, g, b = pixels[i, j]
+            new_r = min(255, int(r * k))
+            new_g = min(255, int(g * k))
+            new_b = min(255, int(b * k))
+            pixels[i, j] = new_r, new_g, new_b
+    im2.save(f'brightness{text}.jpg')
+
+
+def make_average_color(im):
+    x, y = im.size
+    pixels = im.load()
+    red = 0
+    green = 0
+    blue = 0
+    for i in range(x):
+        for j in range(y):
+            r, g, b = pixels[i, j]
+            red += r
+            green += g
+            blue += b
+
+    if x * y == 0:
+        print('странное изображение с разрешением 0')
+        return
+
+    print(f'Средний цвет: {red // (x * y), green // (x * y), blue // (x * y)}')
+    im2 = Image.new("RGB", im.size, (red // (x * y), green // (x * y), blue // (x * y)))
+    im2.save('average.jpg')
+
+
 def main():
     try:
         im = Image.open("rayana.jpg")
@@ -47,13 +93,37 @@ def main():
         print('нет файла')
         return
 
-    mirror_vertical(im)
-    mirror_horizontal(im)
+    print('a: отражение по вертикали')
+    print('b: отражение по горизонтали')
+    print('c: отражение по главной диагонали')
+    print('d: отражение по побочной диагонали')
+    print('f: увелечить яркость на k')
+    print('g: уменьшить яркость на k')
+    print('h: получить средний цвет фотографии')
+    print('i: текст по введенным координатам')
+    print('j: графический примитив по координатам')
 
-    mirror_main_diagonal(im)
-    mirror_no_main_diagonal(im)
+    action = input('Введите из (a, b, c, d, e, f, g, h, i, j) букву: ')
 
-    mirror_sepia(im)
+    match action:
+        case 'a':
+            mirror_vertical(im)
+        case 'b':
+            mirror_horizontal(im)
+        case 'c':
+            mirror_main_diagonal(im)
+        case 'd':
+            mirror_no_main_diagonal(im)
+        case 'e':
+            make_sepia(im)
+        case 'f':
+            make_brightness(im, 'plus')
+        case 'g':
+            make_brightness(im, 'minus')
+        case 'h':
+            make_average_color(im)
+        case _:
+            print('не опознано')
 
 
 if __name__ == "__main__":
