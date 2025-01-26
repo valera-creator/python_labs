@@ -68,6 +68,43 @@ def display_cnt_subscribers(df):
     fig.show()
 
 
+def display_courses_by_level(df):
+    # Замена True и False на слова
+    df['is_paid'] = df['is_paid'].replace({True: 'Платный', False: 'Бесплатный'})
+
+    # кол-во строк сгруппированных
+    grouped_size = df.groupby(['level', 'is_paid']).size()
+
+    # превращение в фрейм, раскладывание на столбцы
+    new_df = grouped_size.unstack()
+
+    # замена NaN на 0 (если NaN, будем считать, что таких курсов 0)
+    new_df = new_df.fillna(0)
+
+    # Преобразование индекса в столбец
+    new_df = new_df.reset_index()
+
+    # подписи и преобразования метрик
+    # id_vars - снизу
+    # var_name - там, где легенда диаграммы, подпись цветов
+    # value_name - слева
+    new_df_melted = new_df.melt(id_vars='level', var_name='Тип курса', value_name='Кол-во курсов')
+
+    # построение
+    fig = px.bar(
+        new_df_melted,
+        x='level',
+        y='Кол-во курсов',
+        color='Тип курса',
+        barmode='group',  # Группировка столбцов
+        title='Кол-во курсов на бесплатных и платных курсах на разных уровнях',
+        text_auto=True  # Автоматическое отображение значений на столбцах
+    )
+
+    fig.update_traces(textposition='outside')
+    fig.show()
+
+
 def main():
     try:
         df = pd.read_csv('udemy_courses_extended.csv', delimiter=',')
@@ -77,6 +114,7 @@ def main():
 
     display_cnt_courses(df)
     display_cnt_subscribers(df)
+    display_courses_by_level(df)
 
 
 if __name__ == "__main__":
