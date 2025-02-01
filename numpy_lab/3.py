@@ -4,10 +4,12 @@ import numpy as np
 
 def main():
     try:
-        arr = np.loadtxt('3_system.txt', encoding='utf-8')
-    except UserWarning:
-        print('пустой файл')
-        return
+        data = [i.strip() for i in open('3_system.txt')]
+        if len(data) == 0:
+            print('файл пустой')
+            return
+        else:
+            arr = np.loadtxt('3_system.txt', encoding='utf-8')
     except ValueError:
         print('возможно, в файле не числа или кол-во неизвестных != кол-во строк')
         return
