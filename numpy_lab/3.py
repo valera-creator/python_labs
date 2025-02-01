@@ -19,7 +19,7 @@ def main():
 
     if arr.ndim == 1:  # если это линейное уравнение
         if len(arr) != 2:
-            print('линейное уравнение не вида ax = b')
+            print('линейное уравнение не вида ax = b и не система')
         elif arr[0] == 0 and arr[1] == 0:
             print('беск много решений')
         elif arr[0] == 0 and arr[1] != 0:
@@ -28,8 +28,12 @@ def main():
             print(arr[1] / arr[0])
         return
 
-    right = arr[:, -1]
-    arr = arr[:, 0:-1]
+    try:
+        right = arr[:, -1]
+        arr = arr[:, 0:-1]
+    except IndexError:
+        print('что-то не так с файлом со строками, ошибка с индексами')
+        return
 
     try:
         solution = np.linalg.solve(arr, right)
