@@ -4,7 +4,7 @@ import numpy as np
 
 def main():
     try:
-        data = [i.strip() for i in open('3_system.txt')]
+        data = [i.strip() for i in open('3_system.txt', encoding='utf-8')]
         if len(data) == 0:
             print('файл пустой')
             return
